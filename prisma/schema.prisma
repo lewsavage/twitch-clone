@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -18,6 +19,73 @@ datasource db {
   externalUserId String @unique
   bio String? @db.Text
 
+  following Follow[] @relation("Following")
+  followedBy Follow[] @relation("FollowedBy")
+  
+  blocking Block[] @relation("Blocking")
+  blockedBy Block[] @relation("BlockedBy")
+
+  stream Stream?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
  }
+
+model Stream {
+  id String @id @default(uuid())
+  name String @db.Text
+  
+  thumbnailUrl String? @db.Text
+
+  ingressId String? @unique
+  serverUrl String? @db.Text
+  streamKey String? @db.Text
+
+  isLive Boolean @default(false)
+  isChatEnabled Boolean @default(true)
+  isChatDelayed Boolean @default(false)
+  isChatFollowersOnly Boolean @default(false)
+
+  userId String @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([ingressId])
+  @@fulltext([name])
+
+}
+
+
+ model Follow {
+  id String @id @default(uuid())
+  followerID String
+  followingId String
+
+  follower User @relation(name: "Following", fields: [followerID], references: [id], onDelete: Cascade)
+  
+  following User @relation(name: "FollowedBy", fields: [followingId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([followerID, followingId])
+  @@index([followerID])
+  @@index([followingId])
+}
+
+model Block {
+  id String @id @default(uuid())
+  blockerID String
+  blockedID String
+
+  blocker User @relation(name: "Blocking", fields:[blockerID], references: [id], onDelete: Cascade)
+
+ blocked User @relation(name: "BlockedBy", fields: [blockedID], references: [id], onDelete: Cascade)
+
+  @@unique([blockerID, blockedID])
+  @@index([blockerID])
+  @@index([blockedID])
+}

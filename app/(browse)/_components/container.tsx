@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useMediaQuery } from "usehooks-ts";
 
 import { cn } from "@/lib/utils";
-import { useSidebar } from "@/use-sidebar";
+import { useSidebar } from "@/store/use-sidebar";
 
 interface ContainerProps {
     children: React.ReactNode;
