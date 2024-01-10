@@ -17,8 +17,16 @@ export const getFollowedUsers = async () => {
                 }
             },
             include: {
-                following: true,
-            },
+                following: {
+                    include: {
+                        stream: {
+                            select: {
+                                isLive: true
+                            }
+                        }
+                    }
+                }
+            }
         });
 
         return followedUsers;
@@ -34,7 +42,7 @@ export const isFollowingUser = async (id: string) => {
             where: { id },
         });
 
-        if(!otherUser) {
+        if (!otherUser) {
             throw new Error("User not found")
         }
 
@@ -60,10 +68,10 @@ export const followUser = async (id: string) => {
     const self = await getSelf();
 
     const otherUser = await db.user.findUnique({
-        where: {id},
+        where: { id },
     });
 
-    if(!otherUser) {
+    if (!otherUser) {
         throw new Error("User not found")
     }
 
@@ -78,7 +86,7 @@ export const followUser = async (id: string) => {
         },
     });
 
-    if(existingFollow) {
+    if (existingFollow) {
         throw new Error("Already following");
     }
 
@@ -100,10 +108,10 @@ export const unfollowUser = async (id: string) => {
     const self = await getSelf();
 
     const otherUser = await db.user.findUnique({
-        where: {id},
+        where: { id },
     });
 
-    if(!otherUser) {
+    if (!otherUser) {
         throw new Error("User not found")
     }
 
@@ -118,7 +126,7 @@ export const unfollowUser = async (id: string) => {
         },
     });
 
-    if(!existingFollow) {
+    if (!existingFollow) {
         throw new Error("Not following this user");
     }
 
