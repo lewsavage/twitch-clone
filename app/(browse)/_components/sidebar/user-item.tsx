@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/store/use-sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
-import { UserAvatar } from "../user-avatar";
-import { LiveBadge } from "../live-badge";
+import { UserAvatar } from "../../../../components/user-avatar";
+import { LiveBadge } from "../../../../components/live-badge";
 
 
 interface UserItemProps {

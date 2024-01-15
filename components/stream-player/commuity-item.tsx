@@ -7,7 +7,6 @@ import { Hint } from "../hint";
 import { onBlock } from "@/actions/blocked";
 import { cn, stringToColor } from '@/lib/utils';
 import { Button } from "../ui/button";
-import { Participant } from "livekit-client";
 
 interface CommunityItemProps {
     hostName: string;
@@ -27,7 +26,7 @@ export const CommunityItem = ({
     const isSelf = participantName === viewerName;
     const isHost = viewerName === hostName;
     const handleBlock = () => {
-        if(!participantName || !isSelf || !isHost) return;
+        if(!participantName || isSelf || !isHost) return;
 
         startTransition(() => {
             onBlock(participantIdentity)
@@ -51,6 +50,7 @@ export const CommunityItem = ({
                         disabled={isPending}
                         onClick={handleBlock}
                         className="h-auto w-auto p-1 opacity-0 group-hover:opacity-100 transition"
+                        asChild
                     >
                         <MinusCircle className="h-4 w-4 text-muted-foreground" />
                     </Button>
